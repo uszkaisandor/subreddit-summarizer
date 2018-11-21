@@ -104,4 +104,7 @@ venv.bak/
 .mypy_cache/
 
 #app __pycache__
-app/__pycache__/
+subreddit-summarizer/__pycache__/
+
+#.DS_store
+subreddit-summarizer/static/css/.DS_Store
