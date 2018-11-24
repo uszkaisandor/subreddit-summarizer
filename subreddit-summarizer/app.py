@@ -27,7 +27,6 @@ def login():
     login_user = db.users.find_one({'username': request.form['username']})
     if login_user:
         if bcrypt.checkpw(request.form['pass'].encode('utf-8'), login_user['password']):
-        #if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
             session['username'] = request.form['username']
             return redirect(url_for('index'))
     return 'Invalid username or password'
@@ -38,7 +37,7 @@ def register():
         existing_user = db.users.find_one({'username' : request.form['username']})
 
         if existing_user is None:
-            hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt()).encode('utf-8')
+            hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt())
             db.users.insert_one({'username': request.form['username'], 'password': hashpass, 'subreddits': []})
             session['username'] = request.form['username']
             return redirect(url_for('index'))
