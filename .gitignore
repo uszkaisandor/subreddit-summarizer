@@ -108,3 +108,6 @@ subreddit-summarizer/__pycache__/
 
 # .DS_store
 subreddit-summarizer/static/css/.DS_Store
+
+# run.sh
+.run.sh
