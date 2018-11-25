@@ -1,3 +1,12 @@
 .welcome-name{
     font-family: monospace;
 }
+div > h3{
+    text-align: center;
+}
+div > h4{
+    text-align: center;
+}
+div.error{
+    text-align: center;
+}
