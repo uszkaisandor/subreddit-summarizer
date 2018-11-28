@@ -19,7 +19,7 @@ subreddits = db['subreddits']
 def index():
     if 'username' in session:
         user = session['username']
-        return render_template('posts.html', username=user)
+        return render_template('reddit.html', username=user)
     return render_template('index.html')
 
 """ Register """
@@ -63,8 +63,9 @@ def login():
     return render_template('index.html', error=error)
 
 
-@bp.route('/logout')
+@bp.route('/logout',methods=['POST'])
 def logout():
-    session.clear()
-    return redirect(url_for('index'))
+    if request.method == 'POST':
+        session.clear()
+        return redirect(url_for('index'))
 
