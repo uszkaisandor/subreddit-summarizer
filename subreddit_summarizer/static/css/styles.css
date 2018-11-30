@@ -1,3 +1,6 @@
+.container{
+    width: auto;
+}
 .welcome-name{
     font-family: monospace;
 }
@@ -9,4 +12,27 @@ div > h4{
 }
 div.error{
     text-align: center;
+}
+.btn-nav{
+    height: 50px;
+    padding-top:  15px;
+    padding-bottom: 15px;
+}
+.nav-logout{
+    height: 50px;
+    text-align: center;
+}
+.nav-user{
+    vertical-align: center;
+    color: white;
+    padding: 15px;    
+}
+.input-subred{
+    margin-top: 10px;
+}
+input[type=text] {
+    width: 80%;
+    padding: 1px 1px;
+    margin: 8px 0px;
+    box-sizing: border-box;
 }

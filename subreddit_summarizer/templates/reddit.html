@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+  <head>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,28 +11,70 @@
 
     <title>Subreddit Summarizer</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">  
+    <link rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+  </head>
 
-</head>
-
-<body>
+  <body>
 
     <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-                <h3>Welcome, {{ username }}!</h3>
-                <form method=POST action="{{ url_for('auth.logout') }}">
-                    <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block">Logout</button>
-                </form>
+      <div class="row">
+        <nav class="navbar navbar-inverse">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <form method=POST action="{{ url_for('reddit.get_reddit') }}">
+                <button type="submit" class="btn btn-link btn-nav">Subreddit
+                  Summarizer</button>
+              </form>
             </div>
+            <ul class="nav navbar-nav">
+              <li>
+                <form method=POST action="{{
+                  url_for('reddit.list_my_subreddits') }}">
+                  <button type="submit" class="btn btn-link btn-nav">My
+                    subreddits</button>
+                </form>
+              </li>
+              <li>
+                <form action="{{ url_for('reddit.add_subreddit') }}"
+                  method="GET">
+                  <div class="form-group">
+                      <input type="text" class="input-subred" placeholder="Add new subreddit" autofocus
+                      size="50"
+                      name="subreddit">
+                    <input type="submit" class="btn btn-primary" value="Add">
+                  </div>
+                </form>
+              </li>
+              <li>
+                <h4 class="nav navbar-nav nav-user">Logged in as {{
+                  session['username'] }}.</h4>
+              </li>
+              <li class="nav-logout">
+                <form method=POST action="{{ url_for('auth.logout') }}">
+                  <button type="submit" class="btn btn-link pull-right btn-nav">Logout</button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      {% if subreddits %}
+      <div class="row">
+        <div class="col-8 col-md-offset-2">
+          <p>{{ subreddits }}</p>
         </div>
+      </div>
+      {% endif %}
+
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-</body>
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </body>
 
 </html>
