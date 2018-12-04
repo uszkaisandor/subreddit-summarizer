@@ -20,6 +20,7 @@ def list_my_subreddits():
         db = conn['redditclient']    # select database
         users = db['users']   # select users collection
         actual_user_subreddits = users.find_one({'username': session['username']}, {'_id': 0, 'subreddits': 1})
+        #TODO: Serialize actual_user_subreddits to python object
         return render_template('reddit.html',
                                subreddits=actual_user_subreddits)
 

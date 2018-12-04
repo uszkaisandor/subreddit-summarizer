@@ -71,3 +71,11 @@ def logout():
     if request.method == 'POST':
         session.clear()
         return redirect(url_for('index'))
+
+@bp.route('/delete_user', methods=['POST'])
+def delete_user():
+    if request.method == 'POST':
+        db.users.delete_one({"username" : session['username']})
+        session.clear()
+        return redirect(url_for('index'))
+

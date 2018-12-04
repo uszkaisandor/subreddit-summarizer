@@ -56,10 +56,17 @@
                   <button type="submit" class="btn btn-link pull-right btn-nav">Logout</button>
                 </form>
               </li>
+              <li class="nav-logout">
+                <form method=POST action="{{ url_for('auth.delete_user') }}">
+                  <button type="submit" class="btn btn-link pull-right btn-nav">Delete account</button>
+                </form>
+              </li>
             </ul>
           </div>
         </nav>
       </div>
+
+      
 
       {% if subreddits %}
       <div class="row">
