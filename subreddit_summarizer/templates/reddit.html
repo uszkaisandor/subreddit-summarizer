@@ -48,8 +48,9 @@
                 </form>
               </li>
               <li>
-                <h4 class="nav navbar-nav nav-user">Logged in as {{
-                  session['username'] }}.</h4>
+                <h4 class="nav navbar-nav nav-user">Logged in as</h4>
+                <h4 class="nav navbar-nav nav-user" style="color:cornflowerblue;">
+                {{session['username'] }}</h4>
               </li>
               <li class="nav-logout">
                 <form method=POST action="{{ url_for('auth.logout') }}">
@@ -58,7 +59,7 @@
               </li>
               <li class="nav-logout">
                 <form method=POST action="{{ url_for('auth.delete_user') }}">
-                  <button type="submit" class="btn btn-link pull-right btn-nav">Delete account</button>
+                  <button type="submit" class="btn btn-link pull-right btn-nav btn-delete">Delete account</button>
                 </form>
               </li>
             </ul>

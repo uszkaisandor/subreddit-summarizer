@@ -25,8 +25,13 @@ div.error{
 .nav-user{
     vertical-align: center;
     color: white;
-    padding: 15px;    
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 5px;     
 }
 .input-subred{
     margin-top: 10px;
+}
+button.btn.btn-link.pull-right.btn-nav.btn-delete{
+    color:red;
 }
