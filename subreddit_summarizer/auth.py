@@ -40,7 +40,7 @@ def register():
         if error is None:
             password_hash = generate_password_hash(password)
             db.users.insert_one(
-                {'username': username, 'password': password_hash, 'subreddits': []})
+                {'username': username, 'password': password_hash, 'subreddits': [], 'posts': []})
             return redirect(url_for('index'))
     return render_template('register.html', error=error)
 

@@ -1,3 +1,6 @@
+body{
+    background-color: ghostwhite;
+}
 .container{
     width: auto;
 }
@@ -34,4 +37,7 @@ div.error{
 }
 button.btn.btn-link.pull-right.btn-nav.btn-delete{
     color:red;
+}
+.list-group-item{
+    font-size: medium;
 }
