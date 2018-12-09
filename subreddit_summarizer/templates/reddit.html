@@ -44,8 +44,8 @@
                 <form action="{{ url_for('reddit.add_subreddit') }}"
                   method="GET">
                   <div class="form-group">
-                    <input type="text" class="input-subred" placeholder="Add new
-                      subreddit"
+                    <input type="text" class="input-subred"
+                      placeholder="Add new subreddit"
                       autofocus size="50"
                       name="subreddit">
                     <input type="submit" class="btn btn-primary" value="Add">
@@ -74,24 +74,18 @@
         </nav>
       </div>
 
-
-      <!-- List subreddits -->
-      {% if subreddits %}
-      <div class="container-fluid">
+      <!--If there are no subreddits yet-->
+      {% if warning %}
+      <div class="containter-fluid">
         <div class="row">
-          <div class="col-md-6 col-md-offset-3">
-            <ul class="list-group">
-              {% for item in subreddits %}
-              {% for i in range(subreddits[item]|length) %}
-              <li class="list-group-item">{{i+1}}) {{subreddits[item][i]}}</li>
-              {% endfor %}
-              {% endfor %}
-            </ul>
+          <div class="col-md-12">
+            <div class="alert alert-warning" role="alert">
+              {{warning}}
+            </div>
           </div>
         </div>
       </div>
       {% endif %}
-
 
       <!--Subreddit download errors-->
       {% if message %}
@@ -117,16 +111,49 @@
       <ul class="list-group">
         {% for post in posts %}
         <li class="list-group-item">
-          <p>{{post['data']['score']}}
-            <a href="{{post['data']['url']}}"> {{post['data']['title']}}</a>
-          </p>
-          <p>
-            created by: <a
-              href="https://www.reddit.com/u/{{post['data']['author']}}">{{post['data']['author']}}</a>
-          </p>
+          <div class="col-md-12">
+            <p>
+              <span>
+                <strong>{{loop.index}})</strong>
+              </span>
+              <span>{{post['data']['score']}}
+                <a href="https://reddit.com{{post['data']['permalink']}}">
+                  {{post['data']['title']}}</a>
+              </span>
+              <span>[{{post['data']['subreddit']}}]</span>
+            </p>
+          </div>
+
+          <div>
+            <span>
+                Posted by <a href="https://www.reddit.com/u/{{post['data']['author']}}">
+                  {{post['data']['author']}}</a> at {{post['data']['created']}}
+            </span>
+            <span>ups: {{post['data']['ups']}}</span>
+            <span>downs: {{post['data']['downs']}}</span>
+            <span>comments: {{post['data']['num_comments']}}</span>
+          </div>
         </li>
       </ul>
       {% endfor %}
+      {% endif %}
+
+
+      <!-- List subreddits -->
+      {% if subreddits is defined %}
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6 col-md-offset-3">
+            <ul class="list-group">
+              {% for item in subreddits %}
+              {% for i in range(subreddits[item]|length) %}
+              <li class="list-group-item">{{i+1}}) {{subreddits[item][i]}}</li>
+              {% endfor %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
       {% endif %}
 
     </body>

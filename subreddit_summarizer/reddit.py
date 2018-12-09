@@ -1,37 +1,54 @@
 from flask import (
     Blueprint, redirect, render_template, request, session, url_for
 )
+from . import reddit
+from flask import current_app
+from datetime import datetime
 import pymongo
 import json
 import requests
-from . import reddit
-from flask import current_app
+import pytz 
+
 bp = Blueprint('reddit', __name__, url_prefix='/reddit')
 
+
+def time_from_int(unix_time):
+    timestamp = datetime.utcfromtimestamp(unix_time)
+    old_timezone = pytz.timezone("UTC")
+    new_timezone = pytz.timezone("Europe/Budapest")
+    # returns datetime in the new timezone
+    timestamp_in_new_timezone = old_timezone.localize(timestamp).astimezone(new_timezone) 
+    return timestamp_in_new_timezone.strftime('%Y-%m-%d %H:%M')
+    
 
 def new_subreddit(response, subreddit):
     conn = pymongo.MongoClient()    # connect to localhost
     db = conn['redditclient']    # select database
     users = db['users']   # select users collection
-    cursor = users.find_one({'username': session['username'], 'subreddits': {"$in": [subreddit]}})
-    
-    #Subreddit doesn't exist in the database yet.
+    cursor = users.find_one(
+        {'username': session['username'], 'subreddits': {"$in": [subreddit]}})
+
+    # Subreddit doesn't exist in the database yet.
     if cursor is None:
-        users.update_one({'username': session['username']}, {'$push': {'subreddits': subreddit}})
+        users.update_one({'username': session['username']}, {
+                         '$push': {'subreddits': subreddit}})
         for item in response['data']['children']:
-        # If post already exists:
-        #cursor2 = users.find_one({'username': session['username'], 'posts': {"$in": {'_id': }}})
-        #users.update_one({'username': session['username']})
-        #else:
+            # If post already exists:
+            # cursor2 = users.find_one({'username': session['username'], 'posts': {"$in": {'_id': }}})
+            #users.update_one({'username': session['username']})
+            # else:
             item['_id'] = item['data']['name']
-            users.update_one({'username': session['username']}, {'$push': {'posts': item}})
+            item['data']['created'] =  time_from_int(item['data']['created'])
+            users.update_one({'username': session['username']}, {
+                             '$push': {'posts': item}})
         context = {
             'mode': 'success',
             'message': 'Subreddit successfully added!'
         }
         return context
-    #Subreddit already exists
+    # Subreddit already exists
     return {'mode': 'error', 'message': 'Subreddit already exists!'}
+
 
 def get_post(subreddit):
     # User agent
@@ -57,22 +74,30 @@ def get_reddit():
         conn = pymongo.MongoClient()    # connect to localhost
         db = conn['redditclient']    # select database
         users = db['users']   # select users collection
-        cursor = users.find_one({'username': session['username']}, {'_id': 0, 'posts': 1})
-        #current_app.logger.info(type(cursor))
+        cursor = users.find_one({'username': session['username']}, {
+                                '_id': 0, 'posts': 1})
+        # Sort posts by reddit score
+        sorted_by_score = sorted(cursor['posts'], key=lambda i: i['data']
+                    ['score'], reverse=True)
+        cursor['posts'] = sorted_by_score
         return render_template('reddit.html', username=session['username'], **cursor)
 
 
-@bp.route('/mysubreddits', methods=['POST'])
+@bp.route('/mysubreddits', methods=['POST', 'GET'])
 def list_my_subreddits():
-    if request.method == 'POST':
+    if request.method in ['POST', 'GET']:
         conn = pymongo.MongoClient()    # connect to localhost
         db = conn['redditclient']    # select database
         users = db['users']   # select users collection
         actual_user_subreddits = users.find_one(
             {'username': session['username']}, {'_id': 0, 'subreddits': 1})
+        warning = None
+        current_app.logger.info(actual_user_subreddits)
+        if actual_user_subreddits['subreddits'] == []:
+            warning = "There are no subreddits yet."
         # TODO: Serialize actual_user_subreddits to python object
         return render_template('reddit.html',
-                               subreddits=actual_user_subreddits)
+                               subreddits=actual_user_subreddits, warning=warning)
 
 
 @bp.route('/addsubreddit', methods=['GET', 'POST'])
