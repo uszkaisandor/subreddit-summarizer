@@ -13,9 +13,9 @@ def new_subreddit(response, subreddit):
     conn = pymongo.MongoClient()    # connect to localhost
     db = conn['redditclient']    # select database
     users = db['users']   # select users collection
-    #Alert user, that subreddit already exists
     cursor = users.find_one({'username': session['username'], 'subreddits': {"$in": [subreddit]}})
-    current_app.logger.info(cursor)
+    
+    #Subreddit doesn't exist in the database yet.
     if cursor is None:
         users.update_one({'username': session['username']}, {'$push': {'subreddits': subreddit}})
         for item in response['data']['children']:
@@ -30,6 +30,7 @@ def new_subreddit(response, subreddit):
             'message': 'Subreddit successfully added!'
         }
         return context
+    #Subreddit already exists
     return {'mode': 'error', 'message': 'Subreddit already exists!'}
 
 def get_post(subreddit):
@@ -52,7 +53,13 @@ def get_post(subreddit):
 @bp.route('', methods=['POST', 'GET'])
 def get_reddit():
     if request.method in ['POST', 'GET']:
-        return render_template('reddit.html', username=session['username'])
+        # TODO: Display posts
+        conn = pymongo.MongoClient()    # connect to localhost
+        db = conn['redditclient']    # select database
+        users = db['users']   # select users collection
+        cursor = users.find_one({'username': session['username']}, {'_id': 0, 'posts': 1})
+        #current_app.logger.info(type(cursor))
+        return render_template('reddit.html', username=session['username'], **cursor)
 
 
 @bp.route('/mysubreddits', methods=['POST'])

@@ -20,7 +20,7 @@ subreddits = db['subreddits']
 def index():
     if 'username' in session:
         user = session['username']
-        return render_template('reddit.html', username=user)
+        return redirect(url_for('reddit.get_reddit'))
     return render_template('index.html')
 
 
