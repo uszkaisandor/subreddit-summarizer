@@ -58,7 +58,7 @@ def add_posts(response, mode):
     users = db['users']   # select users collection
     if mode is "add":
         for item in response['data']['children']:
-            item['_id'] = item['data']['name']
+            item['_id'] = item['data']['id']
             item['data']['created'] = time_from_int(item['data']['created'])
             users.update_one({'username': session['username']}, {
                              '$push': {'posts': item}})
