@@ -64,7 +64,7 @@
                 </form>
               </li>
               <li class="nav-logout">
-                <form method=POST action="{{ url_for('auth.delete_user') }}">
+                <form method=POST onsubmit="return confirm('Delete your account?')" action="{{ url_for('auth.delete_user') }}">
                   <button type="submit" class="btn btn-link pull-right btn-nav
                     btn-delete">Delete account</button>
                 </form>
@@ -116,26 +116,34 @@
               <span>
                 <strong>{{loop.index}})</strong>
               </span>
-              <span>{{post['data']['score']}}
+              <span class="score">
+                {{post['data']['score']}}
+              </span>
+              <span class="title">
                 <a href="https://reddit.com{{post['data']['permalink']}}">
                   {{post['data']['title']}}</a>
               </span>
-              <span>[{{post['data']['subreddit']}}]</span>
+              <span class="span-subred">{{post['data']['subreddit']}}</span>
             </p>
           </div>
 
-          <div>
-            <span>
-                Posted by <a href="https://www.reddit.com/u/{{post['data']['author']}}">
-                  {{post['data']['author']}}</a> at {{post['data']['created']}}
+          <div> 
+            <span class="posted">
+              Posted by <a
+                href="https://www.reddit.com/u/{{post['data']['author']}}">
+                {{post['data']['author']}}</a> at {{post['data']['created']}}
             </span>
-            <span>ups: {{post['data']['ups']}}</span>
-            <span>downs: {{post['data']['downs']}}</span>
-            <span>comments: {{post['data']['num_comments']}}</span>
+            <span class="metadata">ups: {{post['data']['ups']}}</span>
+            <span class="metadata">downs: {{post['data']['downs']}}</span>
+            <span class="metadata">
+              comments:
+              <a href="https://reddit.com{{post['data']['permalink']}}">
+                {{post['data']['num_comments']}}</a>
+              </span>
           </div>
         </li>
-      </ul>
       {% endfor %}
+      </ul>
       {% endif %}
 
 
@@ -147,7 +155,14 @@
             <ul class="list-group">
               {% for item in subreddits %}
               {% for i in range(subreddits[item]|length) %}
-              <li class="list-group-item">{{i+1}}) {{subreddits[item][i]}}</li>
+              <li class="list-group-item">
+                <span>
+                  {{i+1}})
+                </span>
+                <span>
+                  {{subreddits[item][i]}}
+                </span>
+              </li>
               {% endfor %}
               {% endfor %}
             </ul>

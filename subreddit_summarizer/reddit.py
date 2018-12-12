@@ -33,11 +33,7 @@ def new_subreddit(response, subreddit):
         users.update_one({'username': session['username']}, {
                          '$push': {'subreddits': subreddit}})
         for item in response['data']['children']:
-            # If post already exists:
-            # cursor2 = users.find_one({'username': session['username'], 'posts': {"$in": {'_id': }}})
-            #users.update_one({'username': session['username']})
-            # else:
-            item['_id'] = item['data']['name']
+            item['_id'] = item['data']['id']
             item['data']['created'] =  time_from_int(item['data']['created'])
             users.update_one({'username': session['username']}, {
                              '$push': {'posts': item}})
@@ -48,6 +44,29 @@ def new_subreddit(response, subreddit):
         return context
     # Subreddit already exists
     return {'mode': 'error', 'message': 'Subreddit already exists!'}
+
+
+def update_all_posts():
+    conn = pymongo.MongoClient()    # connect to localhost
+    db = conn['redditclient']    # select database
+    users = db['users']   # select users collection
+    cursor_subred = users.find_one(
+        {'username': session['username']},{ '_id': 0, 'subreddits': 1})
+    if len(cursor_subred['subreddits']) > 0:
+        users.update_one({'username': session['username']}, {'$unset': { 'posts': 1 }})
+    for subred in cursor_subred['subreddits']:
+        current_app.logger.info(subred)
+        # User agent
+        url = "http://www.reddit.com/r/{}/.json".format(subred)
+        headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+        response = requests.get(url, headers=headers).json()
+        for item in response['data']['children']:
+            item['_id'] = item['data']['id']
+            item['data']['created'] =  time_from_int(item['data']['created'])
+            users.update_one({'username': session['username']}, {
+                             '$push': {'posts': item}}, upsert=True)
+
 
 
 def get_post(subreddit):
@@ -74,6 +93,7 @@ def get_reddit():
         conn = pymongo.MongoClient()    # connect to localhost
         db = conn['redditclient']    # select database
         users = db['users']   # select users collection
+        update_all_posts()
         cursor = users.find_one({'username': session['username']}, {
                                 '_id': 0, 'posts': 1})
         # Sort posts by reddit score
@@ -108,3 +128,4 @@ def add_subreddit():
     new_subreddit = request.args.get('subreddit', '').strip()
     context = get_post(new_subreddit)
     return render_template('reddit.html', **context)
+

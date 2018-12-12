@@ -1,5 +1,5 @@
 body{
-    background-color: ghostwhite;
+    background-color: #dddddd;
 }
 .container{
     width: auto;
@@ -40,4 +40,39 @@ button.btn.btn-link.pull-right.btn-nav.btn-delete{
 }
 .list-group-item{
     font-size: medium;
+}
+
+span > strong{
+   margin-right: 1em;
+}
+span.score{
+    color: rgb(173, 64, 64);
+    font-weight: bold;
+    margin-right: 1em;
+}
+span.posted{
+    font-size: 12px;
+    color: darkslategray;
+}
+span.metadata{
+    margin-left: 1em;
+    font-size: 12px;
+    color: darkslategray;
+}
+span.posted > a{
+    text-decoration: underline;
+    color: darkblue;
+}
+span.span-subred{
+    font-style: italic;
+    color: rgba(209, 94, 0, 0.74);
+    margin-left: 5px;
+}
+span.title > a{
+    color:black;
+}
+li.list-group-item{
+    margin: 0.5em;
+    border-radius: 4px;
+    border-color: darkslategray;
 }
